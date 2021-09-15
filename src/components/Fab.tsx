@@ -5,6 +5,7 @@ import {
   View,
   StyleSheet,
   TouchableNativeFeedback,
+  Platform,
 } from 'react-native';
 
 interface FabProps {
@@ -14,21 +15,41 @@ interface FabProps {
 }
 
 const Fab = ({onPress, text, position = 'br'}: FabProps) => {
-  return (
-    <View
-      style={[
-        styles.fabLocation,
-        position === 'br' ? styles.fabLocationRight : styles.fabLocationLeft,
-      ]}>
-      <TouchableNativeFeedback
-        onPress={onPress}
-        background={TouchableNativeFeedback.Ripple('black', false, 30)}>
+  const ios = () => {
+    return (
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={[
+          styles.fabLocation,
+          position === 'br' ? styles.fabLocationRight : styles.fabLocationLeft,
+        ]}
+        onPress={onPress}>
         <View style={styles.fab}>
           <Text style={styles.fabText}>{text}</Text>
         </View>
-      </TouchableNativeFeedback>
-    </View>
-  );
+      </TouchableOpacity>
+    );
+  };
+
+  const android = () => {
+    return (
+      <View
+        style={[
+          styles.fabLocation,
+          position === 'br' ? styles.fabLocationRight : styles.fabLocationLeft,
+        ]}>
+        <TouchableNativeFeedback
+          onPress={onPress}
+          background={TouchableNativeFeedback.Ripple('black', false, 30)}>
+          <View style={styles.fab}>
+            <Text style={styles.fabText}>{text}</Text>
+          </View>
+        </TouchableNativeFeedback>
+      </View>
+    );
+  };
+
+  return Platform.OS === 'android' ? android() : ios();
 };
 
 export default Fab;
